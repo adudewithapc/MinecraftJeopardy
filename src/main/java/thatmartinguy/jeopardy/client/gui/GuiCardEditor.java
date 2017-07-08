@@ -3,6 +3,7 @@ package thatmartinguy.jeopardy.client.gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -47,26 +48,37 @@ public class GuiCardEditor extends GuiScreen
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+
         this.drawDefaultBackground();
         this.mc.getTextureManager().bindTexture(BACKGROUND_TEXTURE);
+        this.drawTexturedModalRect((this.width - 256) / 2, 2, 0, 0, 256, 256);
+
+        question.drawTextBox();
+        answerA.drawTextBox();
+        answerB.drawTextBox();
+        answerC.drawTextBox();
+        answerD.drawTextBox();
+
+        super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
     public void initGui()
     {
         this.buttonList.clear();
+        this.answerList.clear();
 
         closeButton = this.addButton(new GuiButton(4, this.width / 2 + 200, this.height + 200, "Close"));
-        saveButton = this.addButton(new GuiButton(5, this.width / 2 - 200, this.height / 2 + 200, "Save"));
+        saveButton = this.addButton(new GuiButton(5, this.width / 2 - 200, this.height + 200, "Save"));
 
         booleanButton = this.addButton(new GuiButton(6, this.width / 2, this.height / 2 + 200, "True/False Question"));
 
-        question = new GuiTextField(7, this.fontRenderer, this.width / 2, this.height + 50, 200, 20);
-        answerA = new GuiTextField(8, this.fontRenderer, 200, 200, 200, 20);
-        answerB = new GuiTextField(9, this.fontRenderer, this.width - 50, 200, 200, 20);
-        answerC = new GuiTextField(10, this.fontRenderer, 200, this.height / 2 + 100, 200, 20);
-        answerD = new GuiTextField(11, this.fontRenderer, this.width - 50, this.height / 2 + 100, 200, 20);
+        question = new GuiTextField(7, this.fontRenderer, this.width / 2, 50, 200, 20);
+        answerA = new GuiTextField(8, this.fontRenderer, this.width / 2 - 200, this.height / 2 - 200, 200, 20);
+        answerB = new GuiTextField(9, this.fontRenderer, this.width / 2 + 200, this.height / 2 + 200, 200, 20);
+        answerC = new GuiTextField(10, this.fontRenderer, this.width / 2 - 200, this.height / 2 + 200, 200, 20);
+        answerD = new GuiTextField(11, this.fontRenderer, this.width / 2 + 200, this.height / 2 + 200, 200, 20);
 
         trueAnswerButton = this.addButton(new GuiButton(20, answerA.x, answerA.y, "True"));
         falseAnswerButton = this.addButton(new GuiButton(21, answerB.x, answerB.y, "False"));
@@ -82,12 +94,6 @@ public class GuiCardEditor extends GuiScreen
         this.buttonList.add(new CorrectAnswerButton(1, answerB));
         this.buttonList.add(new CorrectAnswerButton(2, answerC));
         this.buttonList.add(new CorrectAnswerButton(3, answerD));
-
-        question.drawTextBox();
-        answerA.drawTextBox();
-        answerB.drawTextBox();
-        answerC.drawTextBox();
-        answerD.drawTextBox();
     }
 
     @Override
@@ -172,7 +178,7 @@ public class GuiCardEditor extends GuiScreen
     {
         public CorrectAnswerButton(int buttonId, GuiTextField answerField)
         {
-            super(buttonId, answerField.x, answerField.y, "");
+            super(buttonId, answerField.x + 10, answerField.y, 20, 20, "");
         }
     }
 }
