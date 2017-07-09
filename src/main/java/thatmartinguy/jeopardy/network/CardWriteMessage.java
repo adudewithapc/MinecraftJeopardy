@@ -1,39 +1,73 @@
 package thatmartinguy.jeopardy.network;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import thatmartinguy.jeopardy.Jeopardy;
+import thatmartinguy.jeopardy.init.ModItems;
+import thatmartinguy.jeopardy.util.ItemNBTHelper;
 
 public class CardWriteMessage implements IMessage
 {
     private ItemStack paper;
-    private ItemStack card;
+
+    private int correctAnswer;
+    private boolean booleanQuestion;
+
+    private String name;
+
+    private String question;
+    private String answerA;
+    private String answerB;
+    private String answerC;
+    private String answerD;
 
     public CardWriteMessage() {}
 
-    public CardWriteMessage(ItemStack paper, ItemStack card)
+    public CardWriteMessage(ItemStack paper, int correctAnswer, boolean booleanQuestion, String name, String question, String answerA, String answerB, String answerC, String answerD)
     {
         this.paper = paper;
-        this.card = card;
+        this.booleanQuestion = booleanQuestion;
+        this.correctAnswer = correctAnswer;
+        this.name = name;
+        this.question = question;
+        this.answerA = answerA;
+        this.answerB = answerB;
+        this.answerC = answerC;
+        this.answerD = answerD;
     }
 
     @Override
     public void fromBytes(ByteBuf buf)
     {
-        paper = ByteBufUtils.readItemStack(buf);
-        card = ByteBufUtils.readItemStack(buf);
+        correctAnswer = buf.readInt();
+
+        name = ByteBufUtils.readUTF8String(buf);
+
+        question = ByteBufUtils.readUTF8String(buf);
+
+        answerA = ByteBufUtils.readUTF8String(buf);
+        answerB = ByteBufUtils.readUTF8String(buf);
+        answerC = ByteBufUtils.readUTF8String(buf);
+        answerD = ByteBufUtils.readUTF8String(buf);
     }
 
     @Override
     public void toBytes(ByteBuf buf)
     {
-        ByteBufUtils.writeItemStack(buf, paper);
-        ByteBufUtils.writeItemStack(buf, card);
+        buf.writeInt(correctAnswer);
+
+        ByteBufUtils.writeUTF8String(buf, name);
+
+        ByteBufUtils.writeUTF8String(buf, question);
+
+        ByteBufUtils.writeUTF8String(buf, answerA);
+        ByteBufUtils.writeUTF8String(buf, answerB);
+        ByteBufUtils.writeUTF8String(buf, answerC);
+        ByteBufUtils.writeUTF8String(buf, answerD);
     }
 
     public static class Handler implements IMessageHandler<CardWriteMessage, IMessage>
@@ -43,15 +77,24 @@ public class CardWriteMessage implements IMessage
         {
             Jeopardy.proxy.getThreadListener(ctx).addScheduledTask(() ->
             {
-               EntityPlayer player = Jeopardy.proxy.getPlayer(ctx);
+               message.paper.shrink(1);
 
-               for(ItemStack itemStack : player.inventoryContainer.inventoryItemStacks)
-               {
-                   if(itemStack == message.paper)
-                       itemStack.shrink(1);
-               }
-               player.addItemStackToInventory(message.card);
+               ItemStack card = new ItemStack(ModItems.itemQuizCard);
+
+               ItemNBTHelper.setInt(card, "AnswerID", message.correctAnswer);
+               ItemNBTHelper.setBoolean(card, "BooleanQuestion", message.booleanQuestion);
+               ItemNBTHelper.setString(card, "Author", message.name);
+
+               ItemNBTHelper.setString(card, "Question", message.question);
+
+               ItemNBTHelper.setString(card, "AnswerA", message.answerA);
+               ItemNBTHelper.setString(card, "AnswerB", message.answerB);
+               ItemNBTHelper.setString(card, "AnswerC", message.answerC);
+               ItemNBTHelper.setString(card, "AnswerD", message.answerD);
+
+               Jeopardy.proxy.getPlayer(ctx).addItemStackToInventory(card);
             });
+
             return null;
         }
     }

@@ -4,6 +4,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -54,6 +55,15 @@ public class ItemQuizCard extends Item
             return ItemNBTHelper.getString(stack, "Question", "");
         else
             return TextFormatting.RED + "ERROR";
+    }
+
+    @Nullable
+    @Override
+    public NBTTagCompound getNBTShareTag(ItemStack stack)
+    {
+        stack.getTagCompound().removeTag("AnswerID");
+
+        return stack.getTagCompound();
     }
 
     public Item setUnlocalizedName()

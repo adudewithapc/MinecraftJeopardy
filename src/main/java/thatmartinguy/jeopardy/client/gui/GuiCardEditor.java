@@ -7,12 +7,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.input.Keyboard;
 import thatmartinguy.jeopardy.Jeopardy;
 import thatmartinguy.jeopardy.init.ModItems;
 import thatmartinguy.jeopardy.network.CardWriteMessage;
 import thatmartinguy.jeopardy.util.ItemNBTHelper;
-import thatmartinguy.jeopardy.util.LogHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,7 +106,7 @@ public class GuiCardEditor extends GuiScreen
                 this.mc.displayGuiScreen(null);
                 break;
             case 5:
-                saveCard();
+                saveCard(correctAnswerID);
                 this.mc.displayGuiScreen(null);
                 break;
             case 6:
@@ -156,26 +154,9 @@ public class GuiCardEditor extends GuiScreen
             correctAnswerID = 1;
     }
 
-    private void saveCard()
+    private void saveCard(int answerID)
     {
-        ItemStack card = new ItemStack(ModItems.itemQuizCard);
-
-        ItemNBTHelper.setBoolean(card, "BooleanQuestion", booleanQuestion);
-        ItemNBTHelper.setString(card, "Question", question.getText());
-
-        ItemNBTHelper.setString(card, "Author", player.getName());
-
-        if(!booleanQuestion)
-        {
-            ItemNBTHelper.setString(card, "AnswerA", answerA.getText());
-            ItemNBTHelper.setString(card, "AnswerB", answerB.getText());
-            ItemNBTHelper.setString(card, "AnswerC", answerC.getText());
-            ItemNBTHelper.setString(card, "AnswerD", answerD.getText());
-        }
-
-        ItemNBTHelper.setInt(card, "AnswerID", correctAnswerID);
-        Jeopardy.NETWORK.sendToServer(new CardWriteMessage(paper, card));
-        paper.shrink(1);
+        Jeopardy.NETWORK.sendToServer(new CardWriteMessage(paper, answerID, booleanQuestion, player.getName(), question.getText(), answerA.getText(), answerB.getText(), answerC.getText(), answerD.getSelectedText()));
     }
 
     @Override
