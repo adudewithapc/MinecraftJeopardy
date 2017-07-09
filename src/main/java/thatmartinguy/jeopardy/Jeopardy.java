@@ -9,6 +9,10 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
+import thatmartinguy.jeopardy.network.CardWriteMessage;
 import thatmartinguy.jeopardy.proxy.IProxy;
 import thatmartinguy.jeopardy.util.Reference;
 
@@ -23,10 +27,15 @@ public class Jeopardy
             return new ItemStack(Items.PAPER);
         }
     };
+
+    public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
+        int networkID = -1;
 
+        NETWORK.registerMessage(CardWriteMessage.Handler.class, CardWriteMessage.class, networkID++, Side.SERVER);
     }
 
     @EventHandler
