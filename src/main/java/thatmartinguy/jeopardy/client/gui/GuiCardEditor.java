@@ -22,7 +22,7 @@ public class GuiCardEditor extends GuiScreen
 {
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/gui/demo_background.png");
 
-    private boolean booleanQuestion;
+    private boolean booleanQuestion = true;
     private int correctAnswerID = -1;
 
     private EntityPlayer player;
@@ -32,9 +32,6 @@ public class GuiCardEditor extends GuiScreen
     private GuiButton saveButton;
     private GuiButton booleanButton;
 
-    private GuiButton trueAnswerButton;
-    private GuiButton falseAnswerButton;
-
     private GuiTextField question;
     private GuiTextField answerA;
     private GuiTextField answerB;
@@ -42,6 +39,11 @@ public class GuiCardEditor extends GuiScreen
     private GuiTextField answerD;
 
     private List<GuiTextField> answerList = new ArrayList<>();
+
+    private CorrectAnswerButton correctA;
+    private CorrectAnswerButton correctB;
+    private CorrectAnswerButton correctC;
+    private CorrectAnswerButton correctD;
 
     public GuiCardEditor(EntityPlayer player, ItemStack paper)
     {
@@ -72,12 +74,11 @@ public class GuiCardEditor extends GuiScreen
     {
         this.buttonList.clear();
         this.answerList.clear();
-        Keyboard.enableRepeatEvents(true);
 
         closeButton = this.addButton(new GuiButton(4, this.width / 2 + 50, this.height - 40, "Close"));
         saveButton = this.addButton(new GuiButton(5, this.width / 2 - 225, this.height - 40, "Save"));
 
-        booleanButton = this.addButton(new GuiButton(6, this.width / 2, this.height / 2 + 200, "True/False Question"));
+        booleanButton = this.addButton(new GuiButton(6, this.width / 2 - 100, this.height / 2, "True/False Question"));
 
         question = new GuiTextField(7, this.fontRenderer, this.width / 2 - 100, 40, 200, 20);
         answerA = new GuiTextField(8, this.fontRenderer, this.width / 2 - 225, this.height / 2 - 40, 200, 20);
@@ -85,22 +86,17 @@ public class GuiCardEditor extends GuiScreen
         answerC = new GuiTextField(10, this.fontRenderer, this.width / 2 - 225, this.height / 2 + 40, 200, 20);
         answerD = new GuiTextField(11, this.fontRenderer, this.width / 2 + 10, this.height / 2 + 40, 200, 20);
 
-        trueAnswerButton = this.addButton(new GuiButton(20, answerA.x, answerA.y, "True"));
-        falseAnswerButton = this.addButton(new GuiButton(21, answerB.x, answerB.y, "False"));
-        trueAnswerButton.visible = false;
-        falseAnswerButton.visible = false;
-
         answerList.add(answerA);
         answerList.add(answerB);
         answerList.add(answerC);
         answerList.add(answerD);
 
-        answerA.setFocused(true);
+        question.setFocused(true);
 
-        this.buttonList.add(new CorrectAnswerButton(0, answerA));
-        this.buttonList.add(new CorrectAnswerButton(1, answerB));
-        this.buttonList.add(new CorrectAnswerButton(2, answerC));
-        this.buttonList.add(new CorrectAnswerButton(3, answerD));
+        correctA = this.addButton(new CorrectAnswerButton(0, answerA));
+        correctB = this.addButton(new CorrectAnswerButton(1, answerB));
+        correctC = this.addButton(new CorrectAnswerButton(2, answerC));
+        correctD = this.addButton(new CorrectAnswerButton(3, answerD));
     }
 
     @Override
@@ -113,33 +109,41 @@ public class GuiCardEditor extends GuiScreen
                 break;
             case 5:
                 saveCard();
+                this.mc.displayGuiScreen(null);
                 break;
             case 6:
                 if(booleanQuestion)
                 {
                     booleanQuestion = false;
-                    booleanButton.displayString = "True/False Question";
-                    for(GuiTextField textField : answerList)
-                    {
-                        textField.setVisible(true);
-                    }
-                    trueAnswerButton.enabled = false;
-                    trueAnswerButton.visible = false;
-                    falseAnswerButton.enabled = false;
-                    falseAnswerButton.visible = false;
+                    booleanButton.displayString = "A-D Question";
+
+                    answerA.setText("True");
+                    answerA.setEnabled(false);
+                    answerB.setText("False");
+                    answerB.setEnabled(false);
+
+                    answerC.setVisible(false);
+                    answerC.setText("notempty");
+                    answerD.setVisible(false);
+                    answerD.setText("notempty");
+
+                    correctC.visible = false;
+                    correctD.visible = false;
                 }
                 else
                 {
-                    booleanQuestion = true;
-                    booleanButton.displayString = "A-D Question";
-                    for (GuiTextField textField : answerList)
+                    for(GuiTextField answer : answerList)
                     {
-                        textField.setVisible(false);
+                        answer.setVisible(true);
+                        answer.setEnabled(true);
+                        answer.setText("");
                     }
-                    trueAnswerButton.enabled = true;
-                    trueAnswerButton.visible = true;
-                    falseAnswerButton.enabled = true;
-                    falseAnswerButton.visible = true;
+
+                    correctC.visible = true;
+                    correctD.visible = true;
+
+                    booleanQuestion = true;
+                    booleanButton.displayString = "True/False Question";
                 }
                 break;
 
@@ -170,7 +174,6 @@ public class GuiCardEditor extends GuiScreen
         }
 
         ItemNBTHelper.setInt(card, "AnswerID", correctAnswerID);
-
         Jeopardy.NETWORK.sendToServer(new CardWriteMessage(paper, card));
         paper.shrink(1);
     }
@@ -204,19 +207,20 @@ public class GuiCardEditor extends GuiScreen
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
-        for(GuiTextField textField : answerList)
+        if(booleanQuestion)
         {
-            if(textField.mouseClicked(mouseX, mouseY, mouseButton))
+            for (GuiTextField textField : answerList)
             {
-                textField.setFocused(true);
+                if (textField.mouseClicked(mouseX, mouseY, mouseButton))
+                {
+                    textField.setFocused(true);
+                }
+                else
+                {
+                    textField.setFocused(false);
+                    question.setFocused(false);
+                }
             }
-            else
-            {
-                textField.setFocused(false);
-                question.setFocused(false);
-            }
-            LogHelper.info("Answer focused = " + textField.isFocused());
-            LogHelper.info("Question focused = " + question.isFocused());
         }
         if(question.mouseClicked(mouseX, mouseY, mouseButton))
         {
@@ -224,7 +228,7 @@ public class GuiCardEditor extends GuiScreen
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
-    
+
     private static class CorrectAnswerButton extends GuiButton
     {
         public CorrectAnswerButton(int buttonId, GuiTextField answerField)
