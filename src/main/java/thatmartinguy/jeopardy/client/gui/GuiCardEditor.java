@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import thatmartinguy.jeopardy.Jeopardy;
 import thatmartinguy.jeopardy.init.ModItems;
@@ -156,7 +157,11 @@ public class GuiCardEditor extends GuiScreen
 
     private void saveCard(int answerID)
     {
-        Jeopardy.NETWORK.sendToServer(new CardWriteMessage(paper, answerID, booleanQuestion, player.getName(), question.getText(), answerA.getText(), answerB.getText(), answerC.getText(), answerD.getSelectedText()));
+        for(EnumHand hand : EnumHand.values())
+        {
+            if(player.getHeldItem(hand).isItemEqual(paper))
+                Jeopardy.NETWORK.sendToServer(new CardWriteMessage(hand, answerID, booleanQuestion, player.getName(), question.getText(), answerA.getText(), answerB.getText(), answerC.getText(), answerD.getSelectedText()));
+        }
     }
 
     @Override

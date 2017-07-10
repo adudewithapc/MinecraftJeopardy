@@ -1,7 +1,9 @@
 package thatmartinguy.jeopardy.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -12,8 +14,7 @@ import thatmartinguy.jeopardy.util.ItemNBTHelper;
 
 public class CardWriteMessage implements IMessage
 {
-    private ItemStack paper;
-
+    private EnumHand paperHand;
     private int correctAnswer;
     private boolean booleanQuestion;
 
@@ -27,9 +28,9 @@ public class CardWriteMessage implements IMessage
 
     public CardWriteMessage() {}
 
-    public CardWriteMessage(ItemStack paper, int correctAnswer, boolean booleanQuestion, String name, String question, String answerA, String answerB, String answerC, String answerD)
+    public CardWriteMessage(EnumHand paperHand, int correctAnswer, boolean booleanQuestion, String name, String question, String answerA, String answerB, String answerC, String answerD)
     {
-        this.paper = paper;
+        this.paperHand = paperHand;
         this.booleanQuestion = booleanQuestion;
         this.correctAnswer = correctAnswer;
         this.name = name;
@@ -43,6 +44,7 @@ public class CardWriteMessage implements IMessage
     @Override
     public void fromBytes(ByteBuf buf)
     {
+        paperHand = EnumHand.values()[buf.readInt()];
         correctAnswer = buf.readInt();
 
         name = ByteBufUtils.readUTF8String(buf);
@@ -58,6 +60,7 @@ public class CardWriteMessage implements IMessage
     @Override
     public void toBytes(ByteBuf buf)
     {
+        buf.writeInt(paperHand.ordinal());
         buf.writeInt(correctAnswer);
 
         ByteBufUtils.writeUTF8String(buf, name);
@@ -77,22 +80,25 @@ public class CardWriteMessage implements IMessage
         {
             Jeopardy.proxy.getThreadListener(ctx).addScheduledTask(() ->
             {
-               message.paper.shrink(1);
+               EntityPlayer player = Jeopardy.proxy.getPlayer(ctx);
+               if(player.getHeldItem(message.paperHand).getItem() == ModItems.itemPaperAndQuill)
+               {
+                   player.getHeldItem(message.paperHand).shrink(1);
+                   ItemStack card = new ItemStack(ModItems.itemQuizCard);
 
-               ItemStack card = new ItemStack(ModItems.itemQuizCard);
+                   ItemNBTHelper.setInt(card, "AnswerID", message.correctAnswer);
+                   ItemNBTHelper.setBoolean(card, "BooleanQuestion", message.booleanQuestion);
+                   ItemNBTHelper.setString(card, "Author", message.name);
 
-               ItemNBTHelper.setInt(card, "AnswerID", message.correctAnswer);
-               ItemNBTHelper.setBoolean(card, "BooleanQuestion", message.booleanQuestion);
-               ItemNBTHelper.setString(card, "Author", message.name);
+                   ItemNBTHelper.setString(card, "Question", message.question);
 
-               ItemNBTHelper.setString(card, "Question", message.question);
+                   ItemNBTHelper.setString(card, "AnswerA", message.answerA);
+                   ItemNBTHelper.setString(card, "AnswerB", message.answerB);
+                   ItemNBTHelper.setString(card, "AnswerC", message.answerC);
+                   ItemNBTHelper.setString(card, "AnswerD", message.answerD);
 
-               ItemNBTHelper.setString(card, "AnswerA", message.answerA);
-               ItemNBTHelper.setString(card, "AnswerB", message.answerB);
-               ItemNBTHelper.setString(card, "AnswerC", message.answerC);
-               ItemNBTHelper.setString(card, "AnswerD", message.answerD);
-
-               Jeopardy.proxy.getPlayer(ctx).addItemStackToInventory(card);
+                   player.addItemStackToInventory(card);
+               }
             });
 
             return null;

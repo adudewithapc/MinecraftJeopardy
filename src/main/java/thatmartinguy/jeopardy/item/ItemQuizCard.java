@@ -25,6 +25,7 @@ public class ItemQuizCard extends Item
         this.setRegistryName(name);
         this.setUnlocalizedName();
         this.setCreativeTab(Jeopardy.TAB_QUIZ);
+        this.setMaxStackSize(1);
     }
 
     @Override
@@ -61,9 +62,10 @@ public class ItemQuizCard extends Item
     @Override
     public NBTTagCompound getNBTShareTag(ItemStack stack)
     {
-        stack.getTagCompound().removeTag("AnswerID");
+        NBTTagCompound clientNBT = stack.getTagCompound();
+        clientNBT.removeTag("AnswerID");
 
-        return stack.getTagCompound();
+        return clientNBT;
     }
 
     public Item setUnlocalizedName()

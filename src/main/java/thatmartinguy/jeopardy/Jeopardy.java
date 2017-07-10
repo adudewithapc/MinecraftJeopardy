@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import thatmartinguy.jeopardy.network.AnswerHandlerMessage;
+import thatmartinguy.jeopardy.network.AnsweredMessage;
 import thatmartinguy.jeopardy.network.CardWriteMessage;
 import thatmartinguy.jeopardy.proxy.IProxy;
 import thatmartinguy.jeopardy.util.Reference;
@@ -36,6 +38,8 @@ public class Jeopardy
         int networkID = -1;
 
         NETWORK.registerMessage(CardWriteMessage.Handler.class, CardWriteMessage.class, networkID++, Side.SERVER);
+        NETWORK.registerMessage(AnswerHandlerMessage.Handler.class, AnswerHandlerMessage.class, networkID++, Side.SERVER);
+        NETWORK.registerMessage(AnsweredMessage.Handler.class, AnsweredMessage.class, networkID++, Side.CLIENT);
     }
 
     @EventHandler

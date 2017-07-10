@@ -5,7 +5,10 @@ import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
+import thatmartinguy.jeopardy.Jeopardy;
+import thatmartinguy.jeopardy.network.AnswerHandlerMessage;
 import thatmartinguy.jeopardy.util.ItemNBTHelper;
 import thatmartinguy.jeopardy.util.LogHelper;
 
@@ -64,7 +67,7 @@ public class GuiScreenCard extends GuiScreen
         }
         else
         {
-            int answerID = ItemNBTHelper.getInt(card, "AnswerID", -1);
+            /**int answerID = ItemNBTHelper.getInt(card, "AnswerID", -1);
             if(answerID == -1)
             {
                 player.sendStatusMessage(new TextComponentString("The button pressed is not a valid button! Discarding card"), false);
@@ -78,6 +81,11 @@ public class GuiScreenCard extends GuiScreen
             else
             {
                 player.sendMessage(new TextComponentString("Wrong answer."));
+            }**/
+            for(EnumHand hand : EnumHand.values())
+            {
+                if(player.getHeldItem(hand).isItemEqual(card))
+                    Jeopardy.NETWORK.sendToServer(new AnswerHandlerMessage(button.id, hand));
             }
         }
     }
