@@ -160,7 +160,7 @@ public class GuiCardEditor extends GuiScreen
         for(EnumHand hand : EnumHand.values())
         {
             if(player.getHeldItem(hand).isItemEqual(paper))
-                Jeopardy.NETWORK.sendToServer(new CardWriteMessage(hand, answerID, booleanQuestion, player.getName(), question.getText(), answerA.getText(), answerB.getText(), answerC.getText(), answerD.getSelectedText()));
+                Jeopardy.NETWORK.sendToServer(new CardWriteMessage(hand, answerID, booleanQuestion, player.getName(), question.getText(), answerA.getText(), answerB.getText(), answerC.getText(), answerD.getText()));
         }
     }
 

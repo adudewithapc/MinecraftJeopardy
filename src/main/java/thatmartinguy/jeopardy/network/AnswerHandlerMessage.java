@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -51,8 +52,15 @@ public class AnswerHandlerMessage implements IMessage
 
                 if(heldItem.getItem() == ModItems.itemQuizCard)
                 {
-                    Jeopardy.NETWORK.sendToAll(new AnsweredMessage(ItemNBTHelper.getInt(heldItem, "AnswerID", -1) == message.attemptID));
-                    player.setHeldItem(EnumHand.MAIN_HAND, new ItemStack(Items.DIAMOND));
+                    if(ItemNBTHelper.getInt(heldItem, "AnswerID", -1) == message.attemptID)
+                    {
+                        Jeopardy.NETWORK.sendToAll(new AnsweredMessage(true));
+                        player.addItemStackToInventory(new ItemStack(Items.DIAMOND));
+                    }
+                    else
+                    {
+                        player.sendMessage(new TextComponentString("Wrong answer"));
+                    }
                 }
             });
 

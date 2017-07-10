@@ -40,12 +40,11 @@ public class AnsweredMessage implements IMessage
             {
                if(message.correctAnswer)
                {
-                   //TODO: Reward player
+                   //TODO: Reward player?
                    FMLClientHandler.instance().displayGuiScreen(Jeopardy.proxy.getPlayer(ctx), null);
                }
                else
                {
-                   Jeopardy.proxy.getPlayer(ctx).sendMessage(new TextComponentString("Wrong answer"));
                    FMLClientHandler.instance().displayGuiScreen(Jeopardy.proxy.getPlayer(ctx), null);
                }
             });
