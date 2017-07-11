@@ -7,7 +7,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import thatmartinguy.jeopardy.block.BlockQuizBox;
+import thatmartinguy.jeopardy.tileentity.TileEntityQuizBox;
 
 @EventBusSubscriber
 public class ModBlocks
@@ -15,7 +17,7 @@ public class ModBlocks
     public static Block blockQuizBox;
 
     public static final Block[] BLOCKS = {
-        blockQuizBox = new BlockQuizBox("blockQuizBox", Material.IRON)
+            blockQuizBox = new BlockQuizBox("blockQuizBox", Material.ROCK)
     };
 
     @SubscribeEvent
@@ -31,5 +33,10 @@ public class ModBlocks
         {
             event.getRegistry().register(new ItemBlock(block).setUnlocalizedName(block.getUnlocalizedName()).setRegistryName(block.getRegistryName()));
         }
+    }
+
+    public static void registerTileEntities()
+    {
+        GameRegistry.registerTileEntity(TileEntityQuizBox.class, "tileEntityQuizBox");
     }
 }

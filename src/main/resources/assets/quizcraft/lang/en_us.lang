@@ -1,6 +1,9 @@
 # Items
-item.quizcraft:itemquizcard.name=Quiz Card
-item.quizcraft:itempaperandquill.name=Paper and Quill
+item.jeopardy:itemquizcard.name=Quiz Card
+item.jeopardy:itempaperandquill.name=Paper and Quill
+
+# Blocks
+tile.jeopardy:blockquizbox.name=Quiz Box
 
 # Creative tabs
 itemGroup.tabJeopardy=Minecraft Jeopardy

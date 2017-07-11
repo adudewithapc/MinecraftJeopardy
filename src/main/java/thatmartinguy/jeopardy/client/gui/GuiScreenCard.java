@@ -1,7 +1,6 @@
 package thatmartinguy.jeopardy.client.gui;
 
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -52,6 +51,8 @@ public class GuiScreenCard extends GuiScreen
         LogHelper.info("Is boolean question = " + ItemNBTHelper.getBoolean(card, "BooleanQuestion", false));
         if(ItemNBTHelper.getBoolean(card, "BooleanQuestion", false))
         {
+            answerA.y = this.height / 2;
+            answerB.y = this.height / 2;
             answerC.visible = false;
             answerD.visible = false;
         }
@@ -67,26 +68,20 @@ public class GuiScreenCard extends GuiScreen
         }
         else
         {
-            /**int answerID = ItemNBTHelper.getInt(card, "AnswerID", -1);
-            if(answerID == -1)
-            {
-                player.sendStatusMessage(new TextComponentString("The button pressed is not a valid button! Discarding card"), false);
-                card.shrink(1);
-                this.mc.displayGuiScreen(null);
-            }
-            else if(button.id == answerID)
-            {
-                //TODO: Reward player...
-            }
-            else
-            {
-                player.sendMessage(new TextComponentString("Wrong answer."));
-            }**/
             for(EnumHand hand : EnumHand.values())
             {
                 if(player.getHeldItem(hand).isItemEqual(card))
+                {
                     Jeopardy.NETWORK.sendToServer(new AnswerHandlerMessage(button.id, hand));
+                    this.mc.displayGuiScreen(null);
+                }
             }
         }
+    }
+
+    @Override
+    public boolean doesGuiPauseGame()
+    {
+        return false;
     }
 }

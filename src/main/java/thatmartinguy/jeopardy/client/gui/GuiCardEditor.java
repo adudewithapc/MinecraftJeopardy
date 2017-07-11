@@ -19,6 +19,7 @@ import java.util.List;
 
 public class GuiCardEditor extends GuiScreen
 {
+    @SuppressWarnings("unused")
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/gui/demo_background.png");
 
     private boolean booleanQuestion;
@@ -56,8 +57,6 @@ public class GuiCardEditor extends GuiScreen
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
         this.drawDefaultBackground();
-        this.mc.getTextureManager().bindTexture(BACKGROUND_TEXTURE);
-        this.drawTexturedModalRect((this.width - 256) / 2, 2, 0, 0, 256, 256);
 
         question.drawTextBox();
         answerA.drawTextBox();
@@ -117,8 +116,7 @@ public class GuiCardEditor extends GuiScreen
                     booleanButton.displayString = "A-D Question";
 
                     answerA.setText("True");
-                    answerA.setEnabled(false);
-                    answerB.setText("False");
+                    answerA.setEnabled(false);                    answerB.setText("False");
                     answerB.setEnabled(false);
 
                     answerC.setVisible(false);
@@ -213,6 +211,12 @@ public class GuiCardEditor extends GuiScreen
             question.setFocused(true);
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public boolean doesGuiPauseGame()
+    {
+        return false;
     }
 
     private static class CorrectAnswerButton extends GuiButton

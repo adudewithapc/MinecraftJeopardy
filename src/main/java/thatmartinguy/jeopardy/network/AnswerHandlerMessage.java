@@ -56,10 +56,13 @@ public class AnswerHandlerMessage implements IMessage
                     if(ItemNBTHelper.getInt(heldItem, "AnswerID", -1) == message.attemptID)
                     {
                         Jeopardy.NETWORK.sendTo(new AnsweredMessage(true), (EntityPlayerMP) player);
+                        heldItem.shrink(1);
                         player.addItemStackToInventory(new ItemStack(Items.DIAMOND));
                     }
                     else
                     {
+                        Jeopardy.NETWORK.sendTo(new AnsweredMessage(false), (EntityPlayerMP) player);
+                        heldItem.shrink(1);
                         player.sendMessage(new TextComponentString("Wrong answer"));
                     }
                 }

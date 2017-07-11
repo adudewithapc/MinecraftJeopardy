@@ -24,7 +24,6 @@ public class ItemQuizCard extends Item
     {
         this.setRegistryName(name);
         this.setUnlocalizedName();
-        this.setCreativeTab(Jeopardy.TAB_QUIZ);
         this.setMaxStackSize(1);
     }
 
