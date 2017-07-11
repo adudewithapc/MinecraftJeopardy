@@ -21,7 +21,7 @@ public class GuiCardEditor extends GuiScreen
 {
     private static final ResourceLocation BACKGROUND_TEXTURE = new ResourceLocation("textures/gui/demo_background.png");
 
-    private boolean booleanQuestion = true;
+    private boolean booleanQuestion;
     private int correctAnswerID = -1;
 
     private EntityPlayer player;
@@ -111,9 +111,9 @@ public class GuiCardEditor extends GuiScreen
                 this.mc.displayGuiScreen(null);
                 break;
             case 6:
-                if(booleanQuestion)
+                if(!booleanQuestion)
                 {
-                    booleanQuestion = false;
+                    booleanQuestion = true;
                     booleanButton.displayString = "A-D Question";
 
                     answerA.setText("True");
@@ -141,7 +141,7 @@ public class GuiCardEditor extends GuiScreen
                     correctC.visible = true;
                     correctD.visible = true;
 
-                    booleanQuestion = true;
+                    booleanQuestion = false;
                     booleanButton.displayString = "True/False Question";
                 }
                 break;
@@ -193,7 +193,7 @@ public class GuiCardEditor extends GuiScreen
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
-        if(booleanQuestion)
+        if(!booleanQuestion)
         {
             for (GuiTextField textField : answerList)
             {

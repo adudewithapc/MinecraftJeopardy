@@ -62,7 +62,7 @@ public class ItemQuizCard extends Item
     @Override
     public NBTTagCompound getNBTShareTag(ItemStack stack)
     {
-        NBTTagCompound clientNBT = stack.getTagCompound();
+        NBTTagCompound clientNBT = stack.getTagCompound().copy();
         clientNBT.removeTag("AnswerID");
 
         return clientNBT;

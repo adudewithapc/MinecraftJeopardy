@@ -2,6 +2,7 @@ package thatmartinguy.jeopardy.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -54,7 +55,7 @@ public class AnswerHandlerMessage implements IMessage
                 {
                     if(ItemNBTHelper.getInt(heldItem, "AnswerID", -1) == message.attemptID)
                     {
-                        Jeopardy.NETWORK.sendToAll(new AnsweredMessage(true));
+                        Jeopardy.NETWORK.sendTo(new AnsweredMessage(true), (EntityPlayerMP) player);
                         player.addItemStackToInventory(new ItemStack(Items.DIAMOND));
                     }
                     else

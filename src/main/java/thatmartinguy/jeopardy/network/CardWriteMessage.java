@@ -46,6 +46,7 @@ public class CardWriteMessage implements IMessage
     {
         paperHand = EnumHand.values()[buf.readInt()];
         correctAnswer = buf.readInt();
+        booleanQuestion = buf.readBoolean();
 
         name = ByteBufUtils.readUTF8String(buf);
 
@@ -62,6 +63,7 @@ public class CardWriteMessage implements IMessage
     {
         buf.writeInt(paperHand.ordinal());
         buf.writeInt(correctAnswer);
+        buf.writeBoolean(booleanQuestion);
 
         ByteBufUtils.writeUTF8String(buf, name);
 
