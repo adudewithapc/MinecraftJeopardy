@@ -38,6 +38,7 @@ public class BlockQuizBox extends Block
             if(usedItem.getItem() == ModItems.itemQuizCard && !ItemNBTHelper.getString(usedItem, "Author").isEmpty())
             {
                 entityQuizBox.addCard(usedItem);
+                usedItem.shrink(1);
             }
             else if(usedItem.isEmpty())
             {

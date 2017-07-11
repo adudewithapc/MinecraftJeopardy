@@ -11,12 +11,11 @@ import java.util.Random;
 
 public class TileEntityQuizBox extends TileEntity
 {
-    private NonNullList<ItemStack> cards = NonNullList.create();
+    private NonNullList<ItemStack> cards = NonNullList.withSize(27, ItemStack.EMPTY);
 
     public void addCard(ItemStack card)
     {
         cards.add(card);
-        card.shrink(1);
         this.markDirty();
     }
 
@@ -27,6 +26,7 @@ public class TileEntityQuizBox extends TileEntity
         ItemStack randomedCard = cards.get(random.nextInt(cards.size()));
         cards.remove(randomedCard);
 
+        this.markDirty();
         return randomedCard;
     }
 
