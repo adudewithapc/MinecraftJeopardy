@@ -18,13 +18,13 @@ import thatmartinguy.jeopardy.util.ItemNBTHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemQuizCard extends Item
+public class ItemQuizCard extends ItemBase
 {
     public ItemQuizCard(String name)
     {
-        this.setRegistryName(name);
-        this.setUnlocalizedName();
+        super(name);
         this.setMaxStackSize(1);
+        this.setCreativeTab(null);
     }
 
     @Override
@@ -65,10 +65,5 @@ public class ItemQuizCard extends Item
         clientNBT.removeTag("AnswerID");
 
         return clientNBT;
-    }
-
-    public Item setUnlocalizedName()
-    {
-        return super.setUnlocalizedName(this.getRegistryName().toString());
     }
 }

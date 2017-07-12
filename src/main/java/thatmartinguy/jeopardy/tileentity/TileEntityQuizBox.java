@@ -17,9 +17,10 @@ public class TileEntityQuizBox extends TileEntity
     {
         for(int i = 0; i < cards.size(); i++)
         {
-            if(cards.get(i) == ItemStack.EMPTY)
+            if(cards.get(i).isEmpty())
             {
-                cards.set(i, card);
+                cards.set(i, card.copy());
+                break;
             }
         }
         this.markDirty();
@@ -37,7 +38,7 @@ public class TileEntityQuizBox extends TileEntity
         {
             randomedIndex = random.nextInt(cards.size());
             randomedCard = cards.get(randomedIndex);
-        } while(randomedCard == ItemStack.EMPTY);
+        } while(randomedCard.isEmpty());
 
         cards.set(randomedIndex, ItemStack.EMPTY);
 
@@ -71,9 +72,10 @@ public class TileEntityQuizBox extends TileEntity
     public int getCardAmount()
     {
         int i = 0;
-        while(cards.get(i) == ItemStack.EMPTY)
+        for(ItemStack card : cards)
         {
-            i++;
+            if(!card.isEmpty())
+                ++i;
         }
         return i;
     }

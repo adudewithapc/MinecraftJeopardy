@@ -11,13 +11,12 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 import thatmartinguy.jeopardy.Jeopardy;
 import thatmartinguy.jeopardy.client.gui.GuiCardEditor;
 
-public class ItemPaperAndQuill extends Item
+public class ItemPaperAndQuill extends ItemBase
 {
     public ItemPaperAndQuill(String name)
     {
+        super(name);
         this.setCreativeTab(Jeopardy.TAB_QUIZ);
-        this.setRegistryName(name);
-        this.setUnlocalizedName();
     }
 
     @Override
