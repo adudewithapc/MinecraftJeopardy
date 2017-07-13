@@ -2,6 +2,7 @@ package thatmartinguy.jeopardy.proxy;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class ServerProxy implements IProxy
@@ -22,5 +23,14 @@ public class ServerProxy implements IProxy
             return ctx.getServerHandler().player;
         else
             throw new WrongSideException("Tried to get the client player on the server");
+    }
+
+    @Override
+    public World getWorld(MessageContext ctx)
+    {
+        if(ctx.side.isServer())
+            return ctx.getServerHandler().player.world;
+        else
+            throw new WrongSideException("Tried to get the client world on the server");
     }
 }

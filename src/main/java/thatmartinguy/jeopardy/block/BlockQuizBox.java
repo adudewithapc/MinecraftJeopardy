@@ -3,6 +3,7 @@ package thatmartinguy.jeopardy.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -24,6 +25,20 @@ public class BlockQuizBox extends Block
         super(materialIn);
         this.setRegistryName(name);
         this.setUnlocalizedName();
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
+        if (placer instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) placer;
+            if (worldIn.getTileEntity(pos) instanceof TileEntityQuizBox)
+            {
+                TileEntityQuizBox entityQuizBox = (TileEntityQuizBox) worldIn.getTileEntity(pos);
+                entityQuizBox.setPlacerName(player.getName());
+            }
+        }
     }
 
     @Override

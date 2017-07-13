@@ -3,6 +3,7 @@ package thatmartinguy.jeopardy.proxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class ClientProxy implements IProxy
@@ -25,5 +26,14 @@ public class ClientProxy implements IProxy
             return MINECRAFT.player;
         else
             return ctx.getServerHandler().player;
+    }
+
+    @Override
+    public World getWorld(MessageContext ctx)
+    {
+        if(ctx.side.isClient())
+            return MINECRAFT.world;
+        else
+            return ctx.getServerHandler().player.world;
     }
 }
