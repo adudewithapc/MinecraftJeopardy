@@ -1,9 +1,11 @@
 # Items
 item.jeopardy:itemquizcard.name=Quiz Card
 item.jeopardy:itempaperandquill.name=Paper and Quill
+item.jeopardy:itemmic.name=Microphone
 
 # Blocks
 tile.jeopardy:blockquizbox.name=Quiz Box
+tile.jeopardy:blockmicstand.name=Mic Stand
 
 # Creative tabs
 itemGroup.tabJeopardy=Minecraft Jeopardy

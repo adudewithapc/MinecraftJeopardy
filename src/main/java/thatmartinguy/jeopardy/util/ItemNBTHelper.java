@@ -2,6 +2,7 @@ package thatmartinguy.jeopardy.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 
 public class ItemNBTHelper
 {
@@ -40,6 +41,13 @@ public class ItemNBTHelper
     public static void setBoolean(ItemStack itemStack, String key, boolean value)
     {
         getNBT(itemStack).setBoolean(key, value);
+    }
+
+    public static void setBlockPos(ItemStack itemStack, String key, BlockPos value)
+    {
+        setInt(itemStack, key + "X", value.getX());
+        setInt(itemStack, key + "Y", value.getY());
+        setInt(itemStack, key + "Z", value.getZ());
     }
 
     public static String getString(ItemStack itemStack, String key)
@@ -83,6 +91,18 @@ public class ItemNBTHelper
         {
             getNBT(itemStack).setBoolean(key, defaultValue);
             return defaultValue;
+        }
+    }
+
+    public static BlockPos getBlockPos(ItemStack itemStack, String key)
+    {
+        if(hasKey(itemStack, key))
+        {
+            return new BlockPos(getInt(itemStack, key + "X", 0), getInt(itemStack, key + "Y", 0), getInt(itemStack, key + "Z", 0));
+        }
+        else
+        {
+            return BlockPos.ORIGIN;
         }
     }
 }

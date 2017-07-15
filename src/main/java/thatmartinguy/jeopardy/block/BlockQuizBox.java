@@ -1,10 +1,10 @@
 package thatmartinguy.jeopardy.block;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -17,14 +17,13 @@ import thatmartinguy.jeopardy.tileentity.TileEntityQuizBox;
 import thatmartinguy.jeopardy.util.ItemNBTHelper;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
-public class BlockQuizBox extends Block
+public class BlockQuizBox extends BlockBase
 {
     public BlockQuizBox(String name, Material materialIn)
     {
-        super(materialIn);
-        this.setRegistryName(name);
-        this.setUnlocalizedName();
+        super(name, materialIn);
     }
 
     @Override
@@ -36,7 +35,6 @@ public class BlockQuizBox extends Block
             if (worldIn.getTileEntity(pos) instanceof TileEntityQuizBox)
             {
                 TileEntityQuizBox entityQuizBox = (TileEntityQuizBox) worldIn.getTileEntity(pos);
-                entityQuizBox.setPlacerName(player.getName());
             }
         }
     }
@@ -71,6 +69,21 @@ public class BlockQuizBox extends Block
         }
 
         return false;
+    }
+
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
+    {
+        if (worldIn.getTileEntity(pos) instanceof TileEntityQuizBox)
+        {
+            TileEntityQuizBox quizBox = (TileEntityQuizBox) worldIn.getTileEntity(pos);
+            List<ItemStack> cards = quizBox.getCards();
+
+            for(ItemStack card : cards)
+                InventoryHelper.spawnItemStack(worldIn, pos.getX(), pos.getY(), pos.getZ(), card);
+
+            worldIn.removeTileEntity(pos);
+        }
     }
 
     @Override

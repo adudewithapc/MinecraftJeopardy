@@ -2,6 +2,7 @@ package thatmartinguy.jeopardy.item;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,6 +14,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import thatmartinguy.jeopardy.Jeopardy;
 import thatmartinguy.jeopardy.client.gui.GuiScreenCard;
+import thatmartinguy.jeopardy.client.gui.ModGuiHandler;
+import thatmartinguy.jeopardy.network.OpenGuiMessage;
 import thatmartinguy.jeopardy.util.ItemNBTHelper;
 
 import javax.annotation.Nullable;
@@ -43,7 +46,8 @@ public class ItemQuizCard extends ItemBase
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
-        FMLClientHandler.instance().displayGuiScreen(playerIn, new GuiScreenCard(playerIn, playerIn.getHeldItem(handIn)));
+        if(playerIn instanceof EntityPlayerMP)
+            Jeopardy.NETWORK.sendTo(new OpenGuiMessage(ModGuiHandler.QUIZ_CARD), (EntityPlayerMP) playerIn);
 
         return new ActionResult<>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
     }

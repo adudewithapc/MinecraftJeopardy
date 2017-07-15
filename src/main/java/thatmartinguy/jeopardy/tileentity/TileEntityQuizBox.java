@@ -12,18 +12,6 @@ import java.util.Random;
 public class TileEntityQuizBox extends TileEntity
 {
     private NonNullList<ItemStack> cards = NonNullList.withSize(27, ItemStack.EMPTY);
-    private String name;
-
-    public void setPlacerName(String name)
-    {
-        this.name = name;
-        this.markDirty();
-    }
-
-    public String getPlacerName()
-    {
-        return name;
-    }
 
     public void addCard(ItemStack card)
     {
@@ -58,16 +46,17 @@ public class TileEntityQuizBox extends TileEntity
         return randomedCard;
     }
 
+    public NonNullList<ItemStack> getCards()
+    {
+        return cards;
+    }
+
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
         super.writeToNBT(compound);
 
         ItemStackHelper.saveAllItems(compound, cards);
-        for(ItemStack card : cards)
-            LogHelper.info(card.toString());
-
-        compound.setString("Placer", name);
 
         return compound;
     }
@@ -78,10 +67,6 @@ public class TileEntityQuizBox extends TileEntity
         super.readFromNBT(compound);
 
         ItemStackHelper.loadAllItems(compound, cards);
-        for(ItemStack card : cards)
-            LogHelper.info(card.toString());
-
-        name = compound.getString("Placer");
     }
 
     public int getCardAmount()

@@ -12,13 +12,16 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
+import thatmartinguy.jeopardy.client.gui.ModGuiHandler;
 import thatmartinguy.jeopardy.init.ModBlocks;
 import thatmartinguy.jeopardy.network.AnswerHandlerMessage;
 import thatmartinguy.jeopardy.network.AnsweredMessage;
 import thatmartinguy.jeopardy.network.CardWriteMessage;
+import thatmartinguy.jeopardy.network.OpenGuiMessage;
 import thatmartinguy.jeopardy.proxy.IProxy;
 import thatmartinguy.jeopardy.util.Reference;
 
+@Mod.EventBusSubscriber
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION)
 public class Jeopardy
 {
@@ -43,12 +46,13 @@ public class Jeopardy
         NETWORK.registerMessage(CardWriteMessage.Handler.class, CardWriteMessage.class, networkID++, Side.SERVER);
         NETWORK.registerMessage(AnswerHandlerMessage.Handler.class, AnswerHandlerMessage.class, networkID++, Side.SERVER);
         NETWORK.registerMessage(AnsweredMessage.Handler.class, AnsweredMessage.class, networkID++, Side.CLIENT);
+        NETWORK.registerMessage(OpenGuiMessage.Handler.class, OpenGuiMessage.class, networkID++, Side.CLIENT);
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-
+        NetworkRegistry.INSTANCE.registerGuiHandler(instance, new ModGuiHandler());
     }
 
     @Instance

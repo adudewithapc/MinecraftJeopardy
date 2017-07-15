@@ -8,6 +8,7 @@ public class ItemBase extends Item
     public ItemBase(String name)
     {
         this.setRegistryName(name);
+        this.setUnlocalizedName();
         this.setCreativeTab(Jeopardy.TAB_QUIZ);
     }
 
