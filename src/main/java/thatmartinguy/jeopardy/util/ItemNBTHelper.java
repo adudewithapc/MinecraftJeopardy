@@ -96,7 +96,7 @@ public class ItemNBTHelper
 
     public static BlockPos getBlockPos(ItemStack itemStack, String key)
     {
-        if(hasKey(itemStack, key))
+        if(hasKey(itemStack, key + "X"))
         {
             return new BlockPos(getInt(itemStack, key + "X", 0), getInt(itemStack, key + "Y", 0), getInt(itemStack, key + "Z", 0));
         }

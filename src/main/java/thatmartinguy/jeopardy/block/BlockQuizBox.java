@@ -52,6 +52,8 @@ public class BlockQuizBox extends BlockBase
             {
                 entityQuizBox.addCard(usedItem);
                 usedItem.shrink(1);
+
+                return true;
             }
             else if(usedItem.isEmpty())
             {
@@ -64,8 +66,8 @@ public class BlockQuizBox extends BlockBase
                     if(worldIn.isRemote)
                         playerIn.sendMessage(new TextComponentString("The box doesn't contain any cards"));
                 }
+                return true;
             }
-            return true;
         }
 
         return false;
